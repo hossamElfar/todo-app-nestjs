@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/main",
+    "test": "jest",
     "prestart:prod": "tsc",
     "start:prod": "node dist/main.js"
   },
@@ -29,8 +30,28 @@
     "typescript": "^2.8.0"
   },
   "devDependencies": {
+    "@nestjs/testing": "^5.1.0",
+    "@types/faker": "^4.1.2",
+    "@types/jest": "^19.2.3",
     "@types/node": "^7.0.41",
+    "@types/supertest": "^2.0.4",
+    "faker": "^4.1.0",
+    "jest": "^20.0.3",
+    "supertest": "^3.1.0",
+    "ts-jest": "^20.0.3",
     "ts-node": "^6.0.0",
     "tslint": "^5.9.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(e2e/.*|\\.(e2e-spec))\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   }
 }
