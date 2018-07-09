@@ -31,12 +31,20 @@ export class UserService {
         const user = await this.userRepository.findOne({email: loginUserDto.email});
         const match = await bcrypt.compare(loginUserDto.password, user.password);
         if (match){
-        const payload: JwtPayload = { email: user.email};
-        const expiresIn = process.env.JWT_EXPIRY;
-        const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
-        return {expiresIn, accessToken};
+            const payload: JwtPayload = { email: user.email};
+            const expiresIn = process.env.JWT_EXPIRY;
+            const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+            return {expiresIn, accessToken};
         }else{
             throw new UnauthorizedException('wrong credentials');
         }
+    }
+
+    async validateUser(payload: JwtPayload): Promise<any> {
+        return await this.userRepository.findOne({email: payload.email});
+    }
+
+    async findAll(){
+       return await this.userRepository.find({});
     }
 }

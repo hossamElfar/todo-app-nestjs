@@ -1,4 +1,5 @@
-import { Controller, Post, UsePipes, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, UsePipes, Body, BadRequestException, Get, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { JoiValidationPipe } from '../shared/pipes/validation.pipe';
 import { createUserSchema, loginUserSchema } from './conf/users.validations';
@@ -21,5 +22,11 @@ export class UserController {
   @UsePipes(new JoiValidationPipe(loginUserSchema))
   login(@Body() loginUserDto: LoginUserDto) {
     return this.userService.loginUser(loginUserDto);
+  }
+
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  get(){
+    return this.userService.findAll();
   }
 }
