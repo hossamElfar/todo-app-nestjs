@@ -6,6 +6,9 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { DeleteTaskDto } from './dto/delete-task.dto';
 import { User } from '../user/user.entity';
+import * as schedule from '../shared/services/schedule.service';
+import * as mailService from '../shared/services/mail.service';
+import { MailRequest } from '../shared/services/mail.request';
 
 @Injectable()
 export class TaskService {
@@ -31,6 +34,14 @@ export class TaskService {
     const task: Task = new Task();
     task.comment = createTaskDto.comment;
     task.subject = createTaskDto.subject;
+    if (createTaskDto.date){
+      task.date = new Date(createTaskDto.date * 1000);
+      const notificationDate = task.date;
+      notificationDate.setHours(notificationDate.getHours() - 1);
+      schedule.addJob(notificationDate, () => {
+        mailService.sendMail(new MailRequest(user.email, task.subject, task.comment));
+      });
+    }
     task.user = user;
     return await this.taskRepository.save(task);
   }
